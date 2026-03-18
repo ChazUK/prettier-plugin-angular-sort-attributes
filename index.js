@@ -13,6 +13,7 @@ function findOriginalParser(parserName, options, self) {
       return plugin.parsers[parserName];
     }
   }
+  
   throw new Error(
     `[@chazuk/prettier-plugin-angular-sort-attributes] Could not find the original "${parserName}" parser. ` +
       "Make sure prettier >= 3 is installed.",

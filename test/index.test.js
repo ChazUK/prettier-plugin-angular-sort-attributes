@@ -34,27 +34,50 @@ describe("attribute group ordering", () => {
 
     const indexOf = (attr) => output.indexOf(attr);
 
-    assert.ok(indexOf("*ngIf") < indexOf("@fade"), "*ngIf should precede @fade");
-    assert.ok(indexOf("@fade") < indexOf("#myComponent"), "@fade should precede #myComponent");
-    assert.ok(indexOf("#myComponent") < indexOf('class="foo"'), "#myComponent should precede class");
-    assert.ok(indexOf('class="foo"') < indexOf('foo="bar"'), "class should precede foo");
-    assert.ok(indexOf('foo="bar"') < indexOf("[bar]"), "foo should precede [bar]");
-    assert.ok(indexOf("[bar]") < indexOf("[(ngModel)]"), "[bar] should precede [(ngModel)]");
-    assert.ok(indexOf("[(ngModel)]") < indexOf("(click)"), "[(ngModel)] should precede (click)");
+    assert.ok(
+      indexOf("*ngIf") < indexOf("@fade"),
+      "*ngIf should precede @fade",
+    );
+    assert.ok(
+      indexOf("@fade") < indexOf("#myComponent"),
+      "@fade should precede #myComponent",
+    );
+    assert.ok(
+      indexOf("#myComponent") < indexOf('class="foo"'),
+      "#myComponent should precede class",
+    );
+    assert.ok(
+      indexOf('class="foo"') < indexOf('foo="bar"'),
+      "class should precede foo",
+    );
+    assert.ok(
+      indexOf('foo="bar"') < indexOf("[bar]"),
+      "foo should precede [bar]",
+    );
+    assert.ok(
+      indexOf("[bar]") < indexOf("[(ngModel)]"),
+      "[bar] should precede [(ngModel)]",
+    );
+    assert.ok(
+      indexOf("[(ngModel)]") < indexOf("(click)"),
+      "[(ngModel)] should precede (click)",
+    );
     assert.ok(output.includes("(click)"), "should include (click)");
     assert.ok(output.includes("(someEvent)"), "should include (someEvent)");
   });
 });
 
-describe("group 0 – structural directives", () => {
+describe("group 0 - structural directives", () => {
   it("sorts *ngIf, *ngFor, *ngTemplateOutlet all before other groups", async () => {
-    const output = await fmt(`<div *ngFor="let i of items" class="x" *ngTemplateOutlet="tpl" id="y" />`);
+    const output = await fmt(
+      `<div *ngFor="let i of items" class="x" *ngTemplateOutlet="tpl" id="y" />`,
+    );
     assert.ok(output.indexOf("*ng") < output.indexOf('class="x"'));
     assert.ok(output.indexOf("*ng") < output.indexOf('id="y"'));
   });
 });
 
-describe("group 1 – animation triggers", () => {
+describe("group 1 - animation triggers", () => {
   it("handles @trigger syntax", async () => {
     const output = await fmt(`<div class="x" @fade id="y" />`);
     assert.ok(output.indexOf("@fade") < output.indexOf('class="x"'));
@@ -71,7 +94,7 @@ describe("group 1 – animation triggers", () => {
   });
 });
 
-describe("group 2 – element references", () => {
+describe("group 2 - element references", () => {
   it("places #ref after animations but before HTML attrs", async () => {
     const output = await fmt(`<div class="x" #myRef @fade />`);
     assert.ok(output.indexOf("@fade") < output.indexOf("#myRef"));
@@ -79,12 +102,18 @@ describe("group 2 – element references", () => {
   });
 });
 
-describe("group 3 – standard HTML attributes", () => {
+describe("group 3 - standard HTML attributes", () => {
   it("keeps class, id, style in group 3", async () => {
-    const output = await fmt(`<div customProp="val" style="color:red" id="x" class="foo" />`);
-    assert.ok(output.indexOf('class="foo"') < output.indexOf('customProp="val"'));
+    const output = await fmt(
+      `<div customProp="val" style="color:red" id="x" class="foo" />`,
+    );
+    assert.ok(
+      output.indexOf('class="foo"') < output.indexOf('customProp="val"'),
+    );
     assert.ok(output.indexOf('id="x"') < output.indexOf('customProp="val"'));
-    assert.ok(output.indexOf('style="color:red"') < output.indexOf('customProp="val"'));
+    assert.ok(
+      output.indexOf('style="color:red"') < output.indexOf('customProp="val"'),
+    );
   });
 
   it("treats aria-* as group 3", async () => {
@@ -104,7 +133,7 @@ describe("group 3 – standard HTML attributes", () => {
   });
 });
 
-describe("group 4 – non-interpolated string inputs", () => {
+describe("group 4 - non-interpolated string inputs", () => {
   it("places custom plain attrs after HTML attrs but before bindings", async () => {
     const output = await fmt(`<div [value]="v" foo="bar" class="c" />`);
     assert.ok(output.indexOf('class="c"') < output.indexOf('foo="bar"'));
@@ -112,7 +141,7 @@ describe("group 4 – non-interpolated string inputs", () => {
   });
 });
 
-describe("group 5 – property bindings", () => {
+describe("group 5 - property bindings", () => {
   it("places [binding] after plain attrs and before two-way", async () => {
     const output = await fmt(`<div [(ngModel)]="x" [value]="v" foo="bar" />`);
     assert.ok(output.indexOf('foo="bar"') < output.indexOf("[value]"));
@@ -125,14 +154,14 @@ describe("group 5 – property bindings", () => {
   });
 });
 
-describe("group 6 – two-way bindings", () => {
+describe("group 6 - two-way bindings", () => {
   it("places [(binding)] before outputs", async () => {
     const output = await fmt(`<div (click)="fn()" [(ngModel)]="x" />`);
     assert.ok(output.indexOf("[(ngModel)]") < output.indexOf("(click)"));
   });
 });
 
-describe("group 7 – event bindings", () => {
+describe("group 7 - event bindings", () => {
   it("places all outputs last", async () => {
     const output = await fmt(`<div (click)="a()" class="x" (change)="b()" />`);
     assert.ok(output.indexOf('class="x"') < output.indexOf("(change)"));
@@ -140,7 +169,9 @@ describe("group 7 – event bindings", () => {
   });
 
   it("sorts alphabetically within outputs", async () => {
-    const output = await fmt(`<div (submit)="s()" (click)="c()" (change)="ch()" />`);
+    const output = await fmt(
+      `<div (submit)="s()" (click)="c()" (change)="ch()" />`,
+    );
     assert.ok(output.indexOf("(change)") < output.indexOf("(click)"));
     assert.ok(output.indexOf("(click)") < output.indexOf("(submit)"));
   });
@@ -151,7 +182,7 @@ describe("nested elements", () => {
     const input = `<div class="outer"><span (click)="fn()" id="inner"></span></div>`;
     const output = await fmt(input);
     assert.ok(output.includes("id=") && output.includes("(click)"));
-    assert.ok(output.indexOf('id="inner"') < output.indexOf('(click)'));
+    assert.ok(output.indexOf('id="inner"') < output.indexOf("(click)"));
   });
 });
 

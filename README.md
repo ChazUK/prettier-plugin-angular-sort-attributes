@@ -22,16 +22,16 @@ Add the plugin to your Prettier config:
 
 Attributes are grouped and sorted in this order:
 
-| # | Group | Examples |
-|---|-------|---------|
-| 1 | Structural directives | `*ngIf`, `*ngFor`, `*ngTemplateOutlet` |
-| 2 | Animation triggers | `@fade`, `[@slide]="state"` |
-| 3 | Element references | `#myComponent` |
-| 4 | Standard HTML attributes | `class`, `id`, `style`, `aria-*`, `data-*` |
-| 5 | Non-interpolated string inputs | `foo="bar"` |
-| 6 | Property bindings | `[value]="theValue"` |
-| 7 | Two-way bindings | `[(ngModel)]="email"` |
-| 8 | Event bindings | `(click)="onClick()"` |
+| #   | Group                          | Examples                                   |
+| --- | ------------------------------ | ------------------------------------------ |
+| 1   | Structural directives          | `*ngIf`, `*ngFor`, `*ngTemplateOutlet`     |
+| 2   | Animation triggers             | `@fade`, `[@slide]="state"`                |
+| 3   | Element references             | `#myComponent`                             |
+| 4   | Standard HTML attributes       | `class`, `id`, `style`, `aria-*`, `data-*` |
+| 5   | Non-interpolated string inputs | `foo="bar"`                                |
+| 6   | Property bindings              | `[value]="theValue"`                       |
+| 7   | Two-way bindings               | `[(ngModel)]="email"`                      |
+| 8   | Event bindings                 | `(click)="onClick()"`                      |
 
 Within each group, attributes are sorted alphabetically.
 

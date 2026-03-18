@@ -5,16 +5,16 @@ import { htmlElementAttributes } from "html-element-attributes";
 const KNOWN_HTML_ATTRS = new Set(Object.values(htmlElementAttributes).flat());
 
 /**
- * Returns the sort group (0–7) for an attribute name.
+ * Returns the sort group (0-7) for an attribute name.
  *
- * 0 – Structural directives  (*ngIf, *ngFor …)
- * 1 – Animation triggers      (@fade, [@fade] …)
- * 2 – Element references      (#myRef)
- * 3 – Standard HTML attributes (class, id, aria-*, data-* …)
- * 4 – Non-interpolated string inputs (customProp="value")
- * 5 – Property bindings       ([bar]="…")
- * 6 – Two-way bindings        ([(ngModel)]="…")
- * 7 – Event bindings / outputs ((click)="…")
+ * 0 - Structural directives  (*ngIf, *ngFor …)
+ * 1 - Animation triggers      (@fade, [@fade] …)
+ * 2 - Element references      (#myRef)
+ * 3 - Standard HTML attributes (class, id, aria-*, data-* …)
+ * 4 - Non-interpolated string inputs (customProp="value")
+ * 5 - Property bindings       ([bar]="…")
+ * 6 - Two-way bindings        ([(ngModel)]="…")
+ * 7 - Event bindings / outputs ((click)="…")
  */
 export function groupOf(name) {
   if (name.startsWith("*")) return 0;
