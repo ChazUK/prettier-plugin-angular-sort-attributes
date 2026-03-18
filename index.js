@@ -1,4 +1,5 @@
 import { walkAndSort } from "./src/sort-attrs.js";
+import { buildOrderMap } from "./src/order-map.js";
 
 /**
  * Find the original parser from Prettier's built-in plugins.
@@ -28,7 +29,7 @@ function wrapParser(parserName, self) {
     parse(text, options) {
       const original = findOriginalParser(parserName, options, self);
       const ast = original.parse(text, options);
-      walkAndSort(ast);
+      walkAndSort(ast, buildOrderMap(options.angularSortAttributesOrder));
       return ast;
     },
   };
@@ -38,6 +39,19 @@ const plugin = {
   parsers: {
     html: null,
     angular: null,
+  },
+  options: {
+    angularSortAttributesOrder: {
+      type: "string",
+      array: true,
+      default: [{ value: [] }],
+      category: "Global",
+      description:
+        "Custom attribute sort order. Accepts group tokens " +
+        "(<STRUCTURAL_DIRECTIVES>, <ANIMATION_TRIGGERS>, <ELEMENT_REFS>, " +
+        "<HTML_ATTRIBUTES>, <INPUTS>, <TWO_WAY_BINDINGS>, <OUTPUTS>) " +
+        "and/or specific attribute names. Unspecified attributes are placed last.",
+    },
   },
 };
 

@@ -65,6 +65,41 @@ Within each group, attributes are sorted alphabetically.
 />
 ```
 
+## Custom order
+
+Use `angularSortAttributesOrder` to override the default ordering. Mix group tokens with specific attribute names:
+
+```json
+{
+  "plugins": ["@chazuk/prettier-plugin-angular-sort-attributes"],
+  "angularSortAttributesOrder": [
+    "id",
+    "class",
+    "<STRUCTURAL_DIRECTIVES>",
+    "<ANIMATION_TRIGGERS>",
+    "<ELEMENT_REFS>",
+    "<HTML_ATTRIBUTES>",
+    "<INPUTS>",
+    "<TWO_WAY_BINDINGS>",
+    "<OUTPUTS>"
+  ]
+}
+```
+
+**Available group tokens:**
+
+| Token                     | Covers                                                         |
+| ------------------------- | -------------------------------------------------------------- |
+| `<STRUCTURAL_DIRECTIVES>` | `*ngIf`, `*ngFor`, …                                           |
+| `<ANIMATION_TRIGGERS>`    | `@fade`, `[@slide]="state"`, …                                 |
+| `<ELEMENT_REFS>`          | `#myRef`                                                       |
+| `<HTML_ATTRIBUTES>`       | `class`, `id`, `aria-*`, `data-*`, …                           |
+| `<INPUTS>`                | `foo="bar"`, `[value]="v"` (string inputs + property bindings) |
+| `<TWO_WAY_BINDINGS>`      | `[(ngModel)]="…"`                                              |
+| `<OUTPUTS>`               | `(click)="…"`                                                  |
+
+Specific attribute names (e.g. `id`, `class`) are matched exactly and take precedence over their group token. Attributes not covered by the custom order are placed at the end, sorted alphabetically.
+
 ## Requirements
 
 - Node.js 18+

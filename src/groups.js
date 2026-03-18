@@ -1,5 +1,15 @@
 import { htmlElementAttributes } from "html-element-attributes";
 
+export const TOKEN_TO_GROUPS = {
+  "<STRUCTURAL_DIRECTIVES>": [0],
+  "<ANIMATION_TRIGGERS>": [1],
+  "<ELEMENT_REFS>": [2],
+  "<HTML_ATTRIBUTES>": [3],
+  "<INPUTS>": [4, 5],
+  "<TWO_WAY_BINDINGS>": [6],
+  "<OUTPUTS>": [7],
+};
+
 // Build the set of all known HTML attributes from the spec-derived package.
 // aria-* and data-* are patterns so they're handled separately via prefix checks below.
 const KNOWN_HTML_ATTRS = new Set(Object.values(htmlElementAttributes).flat());

@@ -251,6 +251,68 @@ export class AppComponent {}`;
   });
 });
 
+describe("angularSortAttributesOrder option", () => {
+  function fmtCustom(html, order) {
+    return prettier
+      .format(html, {
+        ...FORMAT_OPTS,
+        angularSortAttributesOrder: order,
+      })
+      .then((r) => r.trim());
+  }
+
+  it("respects a fully-specified custom order", async () => {
+    const output = await fmtCustom(
+      `<div *ngIf="x" class="c" (click)="fn()" [val]="v" />`,
+      ["<OUTPUTS>", "<HTML_ATTRIBUTES>", "<INPUTS>", "<STRUCTURAL_DIRECTIVES>"],
+    );
+    assert.ok(output.indexOf("(click)") < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf("[val]"));
+    assert.ok(output.indexOf("[val]") < output.indexOf("*ngIf"));
+  });
+
+  it("places specific attribute names before their group", async () => {
+    const output = await fmtCustom(
+      `<div title="t" id="i" style="s" class="c" />`,
+      ["id", "class", "<HTML_ATTRIBUTES>"],
+    );
+    assert.ok(output.indexOf('id="i"') < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf('title="t"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf('style="s"'));
+  });
+
+  it("<INPUTS> covers both string inputs and property bindings", async () => {
+    const output = await fmtCustom(
+      `<div (click)="fn()" [bound]="b" plain="p" class="c" />`,
+      ["<INPUTS>", "<HTML_ATTRIBUTES>", "<OUTPUTS>"],
+    );
+    // both [bound] and plain are inputs — they come before class and (click)
+    assert.ok(output.indexOf("[bound]") < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('plain="p"') < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf("(click)"));
+  });
+
+  it("places unspecified attributes alphabetically at the end", async () => {
+    const output = await fmtCustom(
+      `<div (click)="fn()" class="c" *ngIf="x" [val]="v" />`,
+      ["<OUTPUTS>"],
+    );
+    // (click) specified first; everything else goes to end sorted alphabetically
+    assert.ok(output.indexOf("(click)") < output.indexOf("*ngIf"));
+    assert.ok(output.indexOf("(click)") < output.indexOf('class="c"'));
+    assert.ok(output.indexOf("(click)") < output.indexOf("[val]"));
+  });
+
+  it("empty option falls back to default group ordering", async () => {
+    const output = await fmtCustom(
+      `<div (click)="fn()" *ngIf="x" class="c" />`,
+      [],
+    );
+    assert.ok(output.indexOf("*ngIf") < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf("(click)"));
+  });
+});
+
 describe("edge cases", () => {
   it("leaves a single-attribute element unchanged", async () => {
     const output = await fmt(`<div class="foo" />`);
