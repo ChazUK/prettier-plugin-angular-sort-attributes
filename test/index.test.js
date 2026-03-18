@@ -206,6 +206,51 @@ describe("idempotency", () => {
   });
 });
 
+describe("TypeScript inline templates", () => {
+  async function fmtTs(ts) {
+    return (
+      await prettier.format(ts, {
+        parser: "typescript",
+        plugins: [plugin],
+        printWidth: 9999,
+        htmlWhitespaceSensitivity: "ignore",
+      })
+    ).trim();
+  }
+
+  it("sorts attributes in a component template string", async () => {
+    const input = `
+@Component({
+  selector: 'app-root',
+  template: \`<div (click)="fn()" class="foo" *ngIf="x"></div>\`,
+})
+export class AppComponent {}`;
+
+    const output = await fmtTs(input);
+    assert.ok(output.indexOf("*ngIf") < output.indexOf("class"));
+    assert.ok(output.indexOf("class") < output.indexOf("(click)"));
+  });
+
+  it("sorts attributes across multiple elements in the template", async () => {
+    const input = `
+@Component({
+  template: \`
+    <div (click)="a()" class="x">
+      <span [value]="v" id="inner" (change)="b()"></span>
+    </div>
+  \`,
+})
+export class AppComponent {}`;
+
+    const output = await fmtTs(input);
+    // outer div: class before (click)
+    assert.ok(output.indexOf('class="x"') < output.indexOf("(click)"));
+    // inner span: id before [value] before (change)
+    assert.ok(output.indexOf('id="inner"') < output.indexOf("[value]"));
+    assert.ok(output.indexOf("[value]") < output.indexOf("(change)"));
+  });
+});
+
 describe("edge cases", () => {
   it("leaves a single-attribute element unchanged", async () => {
     const output = await fmt(`<div class="foo" />`);
