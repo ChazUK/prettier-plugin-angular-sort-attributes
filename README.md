@@ -1,11 +1,11 @@
-# prettier-plugin-angular-attribute-sort
+# @chazuk/prettier-plugin-angular-sort-attributes
 
 A [Prettier](https://prettier.io) plugin that sorts attributes on Angular HTML template elements into a consistent, readable order.
 
 ## Installation
 
 ```sh
-npm install --save-dev prettier-plugin-angular-attribute-sort
+npm install --save-dev @chazuk/prettier-plugin-angular-sort-attributes
 ```
 
 ## Configuration
@@ -14,7 +14,7 @@ Add the plugin to your Prettier config:
 
 ```json
 {
-  "plugins": ["prettier-plugin-angular-attribute-sort"]
+  "plugins": ["@chazuk/prettier-plugin-angular-sort-attributes"]
 }
 ```
 

@@ -2,8 +2,15 @@
 
 const { groupOf } = require("./groups");
 
+function isElement(node) {
+  // Prettier ≥3.3 uses `kind`; Prettier 3.2.x uses `type`
+  return node.kind === "element" || node.type === "element";
+}
+
 function sortAttrs(attrs) {
   return [...attrs].sort((a, b) => {
+    // Guard: skip nodes without a name (shouldn't happen but be defensive)
+    if (!a.name || !b.name) return 0;
     const ga = groupOf(a.name);
     const gb = groupOf(b.name);
     if (ga !== gb) return ga - gb;
@@ -15,8 +22,7 @@ function sortAttrs(attrs) {
 function walkAndSort(node) {
   if (!node) return;
 
-  // Prettier's Angular HTML AST uses `kind` (not `type`) on its nodes
-  if (node.kind === "element" && Array.isArray(node.attrs) && node.attrs.length > 1) {
+  if (isElement(node) && Array.isArray(node.attrs) && node.attrs.length > 1) {
     node.attrs = sortAttrs(node.attrs);
   }
 
