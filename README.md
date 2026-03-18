@@ -24,16 +24,16 @@ Works on `.html` files and inline `template` strings inside TypeScript component
 
 Attributes are grouped and sorted in this order:
 
-| # | Group | Examples |
-|---|---|---|
-| 1 | Structural directives | `*ngIf`, `*ngFor`, `*ngTemplateOutlet` |
-| 2 | Animation triggers | `@fade`, `[@slide]="state"` |
-| 3 | Element references | `#myComponent` |
-| 4 | Standard HTML attributes | `class`, `id`, `style`, `aria-*`, `data-*` |
-| 5 | Non-interpolated string inputs | `foo="bar"` |
-| 6 | Property bindings | `[value]="theValue"` |
-| 7 | Two-way bindings | `[(ngModel)]="email"` |
-| 8 | Event bindings | `(click)="onClick()"` |
+| #   | Group                          | Examples                                   |
+| --- | ------------------------------ | ------------------------------------------ |
+| 1   | Structural directives          | `*ngIf`, `*ngFor`, `*ngTemplateOutlet`     |
+| 2   | Animation triggers             | `@fade`, `[@slide]="state"`                |
+| 3   | Element references             | `#myComponent`                             |
+| 4   | Standard HTML attributes       | `class`, `id`, `style`, `aria-*`, `data-*` |
+| 5   | Non-interpolated string inputs | `foo="bar"`                                |
+| 6   | Property bindings              | `[value]="theValue"`                       |
+| 7   | Two-way bindings               | `[(ngModel)]="email"`                      |
+| 8   | Event bindings                 | `(click)="onClick()"`                      |
 
 Within each group, attributes are sorted alphabetically.
 
@@ -71,15 +71,15 @@ Use `angularSortAttributesOrder` to override the ordering with group tokens, spe
 
 **Available group tokens:**
 
-| Token | Covers |
-|---|---|
-| `<STRUCTURAL_DIRECTIVES>` | `*ngIf`, `*ngFor`, … |
-| `<ANIMATION_TRIGGERS>` | `@fade`, `[@slide]="state"`, … |
-| `<ELEMENT_REFS>` | `#myRef` |
-| `<HTML_ATTRIBUTES>` | `class`, `id`, `aria-*`, `data-*`, … |
-| `<INPUTS>` | `foo="bar"`, `[value]="v"` (string inputs + property bindings) |
-| `<TWO_WAY_BINDINGS>` | `[(ngModel)]="…"` |
-| `<OUTPUTS>` | `(click)="…"` |
+| Token                     | Covers                                                         |
+| ------------------------- | -------------------------------------------------------------- |
+| `<STRUCTURAL_DIRECTIVES>` | `*ngIf`, `*ngFor`, …                                           |
+| `<ANIMATION_TRIGGERS>`    | `@fade`, `[@slide]="state"`, …                                 |
+| `<ELEMENT_REFS>`          | `#myRef`                                                       |
+| `<HTML_ATTRIBUTES>`       | `class`, `id`, `aria-*`, `data-*`, …                           |
+| `<INPUTS>`                | `foo="bar"`, `[value]="v"` (string inputs + property bindings) |
+| `<TWO_WAY_BINDINGS>`      | `[(ngModel)]="…"`                                              |
+| `<OUTPUTS>`               | `(click)="…"`                                                  |
 
 ### Reordering groups
 
@@ -127,10 +127,22 @@ List attribute names before the group tokens to pull them out of their group and
 
 ```html
 <!-- before -->
-<input *ngIf="show" aria-label="Name" class="field" [value]="name" id="name-input" />
+<input
+  *ngIf="show"
+  aria-label="Name"
+  class="field"
+  [value]="name"
+  id="name-input"
+/>
 
 <!-- after -->
-<input id="name-input" class="field" *ngIf="show" aria-label="Name" [value]="name" />
+<input
+  id="name-input"
+  class="field"
+  *ngIf="show"
+  aria-label="Name"
+  [value]="name"
+/>
 ```
 
 `id` and `class` are pulled to positions 1 and 2. Other `<HTML_ATTRIBUTES>` (`aria-label`) stay in their group further down.
@@ -147,7 +159,14 @@ You don't need to list every group. Any attribute not covered by your custom ord
 
 ```html
 <!-- before -->
-<div (click)="fn()" class="card" *ngIf="show" [loading]="busy" id="main" foo="bar" />
+<div
+  (click)="fn()"
+  class="card"
+  *ngIf="show"
+  [loading]="busy"
+  id="main"
+  foo="bar"
+/>
 
 <!-- after -->
 <div
