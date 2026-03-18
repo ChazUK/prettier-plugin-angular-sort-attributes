@@ -1,6 +1,6 @@
 {
   "name": "@chazuk/prettier-plugin-angular-sort-attributes",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Prettier plugin that sorts Angular HTML template attributes",
   "keywords": [
     "prettier",
