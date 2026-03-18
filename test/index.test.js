@@ -1,9 +1,7 @@
-"use strict";
-
-const { describe, it } = require("node:test");
-const assert = require("node:assert/strict");
-const prettier = require("prettier");
-const plugin = require("../index.js");
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+import prettier from "prettier";
+import plugin from "../index.js";
 
 const FORMAT_OPTS = {
   parser: "angular",
@@ -15,12 +13,6 @@ const FORMAT_OPTS = {
 
 async function fmt(html) {
   return (await prettier.format(html, FORMAT_OPTS)).trim();
-}
-
-/** Extract attribute names from formatted output in document order. */
-function attrNames(html) {
-  const matches = [...html.matchAll(/\s([\w\-*#@\[\]()|]+)(?:=|[\s>])/g)];
-  return matches.map((m) => m[1]).filter((n) => !["div", "my-app-component", "input", "ng-template", "ng-container", "button"].includes(n));
 }
 
 describe("attribute group ordering", () => {
@@ -40,24 +32,15 @@ describe("attribute group ordering", () => {
 
     const output = await fmt(input);
 
-    // Assert each group appears before the next by checking index positions
     const indexOf = (attr) => output.indexOf(attr);
 
-    // Structural before animation
     assert.ok(indexOf("*ngIf") < indexOf("@fade"), "*ngIf should precede @fade");
-    // Animation before element ref
     assert.ok(indexOf("@fade") < indexOf("#myComponent"), "@fade should precede #myComponent");
-    // Element ref before HTML attrs
     assert.ok(indexOf("#myComponent") < indexOf('class="foo"'), "#myComponent should precede class");
-    // HTML attrs before non-interpolated string inputs
     assert.ok(indexOf('class="foo"') < indexOf('foo="bar"'), "class should precede foo");
-    // Non-interpolated before property bindings
     assert.ok(indexOf('foo="bar"') < indexOf("[bar]"), "foo should precede [bar]");
-    // Property bindings before two-way
     assert.ok(indexOf("[bar]") < indexOf("[(ngModel)]"), "[bar] should precede [(ngModel)]");
-    // Two-way before outputs
     assert.ok(indexOf("[(ngModel)]") < indexOf("(click)"), "[(ngModel)] should precede (click)");
-    // Both outputs present
     assert.ok(output.includes("(click)"), "should include (click)");
     assert.ok(output.includes("(someEvent)"), "should include (someEvent)");
   });
@@ -99,7 +82,6 @@ describe("group 2 – element references", () => {
 describe("group 3 – standard HTML attributes", () => {
   it("keeps class, id, style in group 3", async () => {
     const output = await fmt(`<div customProp="val" style="color:red" id="x" class="foo" />`);
-    // All three HTML attrs should appear before customProp
     assert.ok(output.indexOf('class="foo"') < output.indexOf('customProp="val"'));
     assert.ok(output.indexOf('id="x"') < output.indexOf('customProp="val"'));
     assert.ok(output.indexOf('style="color:red"') < output.indexOf('customProp="val"'));
@@ -201,7 +183,6 @@ describe("edge cases", () => {
 
   it("handles boolean attributes (no value)", async () => {
     const output = await fmt(`<input (change)="fn()" disabled required />`);
-    // disabled and required are HTML attrs (group 3), (change) is group 7
     assert.ok(output.indexOf("disabled") < output.indexOf("(change)"));
     assert.ok(output.indexOf("required") < output.indexOf("(change)"));
   });

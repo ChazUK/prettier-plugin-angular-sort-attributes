@@ -4,8 +4,11 @@
   "description": "Prettier plugin that sorts Angular HTML template attributes",
   "license": "ISC",
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "files": [
     "index.js",
     "src"
@@ -31,5 +34,8 @@
   "devDependencies": {
     "np": "^11.0.2",
     "prettier": "^3.0.0"
+  },
+  "dependencies": {
+    "html-element-attributes": "^3.5.0"
   }
 }

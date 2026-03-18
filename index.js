@@ -1,17 +1,15 @@
-"use strict";
-
-const { walkAndSort } = require("./src/sort-attrs");
+import { walkAndSort } from "./src/sort-attrs.js";
 
 /**
  * Find the original parser from Prettier's built-in plugins.
  * We look through options.plugins (which always includes Prettier's built-ins)
- * rather than require()ing prettier/plugins/html directly — that approach would
+ * rather than importing prettier/plugins/html directly — that approach would
  * resolve against our own devDep prettier instead of the project's prettier,
  * causing AST/printer version mismatches.
  */
-function findOriginalParser(parserName, options) {
+function findOriginalParser(parserName, options, self) {
   for (const plugin of options.plugins || []) {
-    if (plugin !== module.exports && plugin.parsers?.[parserName]) {
+    if (plugin !== self && plugin.parsers?.[parserName]) {
       return plugin.parsers[parserName];
     }
   }
@@ -21,13 +19,13 @@ function findOriginalParser(parserName, options) {
   );
 }
 
-function wrapParser(parserName) {
+function wrapParser(parserName, self) {
   return {
     astFormat: "html",
     locStart: (node) => node.sourceSpan?.start?.offset ?? 0,
     locEnd: (node) => node.sourceSpan?.end?.offset ?? 0,
     parse(text, options) {
-      const original = findOriginalParser(parserName, options);
+      const original = findOriginalParser(parserName, options, self);
       const ast = original.parse(text, options);
       walkAndSort(ast);
       return ast;
@@ -35,9 +33,14 @@ function wrapParser(parserName) {
   };
 }
 
-module.exports = {
+const plugin = {
   parsers: {
-    html: wrapParser("html"),
-    angular: wrapParser("angular"),
+    html: null,
+    angular: null,
   },
 };
+
+plugin.parsers.html = wrapParser("html", plugin);
+plugin.parsers.angular = wrapParser("angular", plugin);
+
+export default plugin;

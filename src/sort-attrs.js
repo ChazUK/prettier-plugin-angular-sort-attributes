@@ -1,6 +1,4 @@
-"use strict";
-
-const { groupOf } = require("./groups");
+import { groupOf } from "./groups.js";
 
 function isElement(node) {
   // Prettier ≥3.3 uses `kind`; Prettier 3.2.x uses `type`
@@ -19,7 +17,7 @@ function sortAttrs(attrs) {
   });
 }
 
-function walkAndSort(node) {
+export function walkAndSort(node) {
   if (!node) return;
 
   if (isElement(node) && Array.isArray(node.attrs) && node.attrs.length > 1) {
@@ -32,5 +30,3 @@ function walkAndSort(node) {
     }
   }
 }
-
-module.exports = { walkAndSort, sortAttrs };
