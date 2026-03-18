@@ -26,20 +26,25 @@ export function buildOrderMap(rawOption) {
     }
   });
 
-  return { groupPositions, attrPositions };
+  return { groupPositions, attrPositions, length: entries.length };
 }
 
 /**
  * Returns the sort position for an attribute name given a custom order map.
  * Specific attribute names take precedence over group membership.
- * Returns Infinity for attributes not covered by the custom order.
+ * Attributes not covered by the custom order are placed after all specified
+ * entries, preserving their default group ordering amongst themselves.
  */
 export function positionOf(attrName, map) {
   const attrPos = map.attrPositions.get(attrName);
   if (attrPos !== undefined) return attrPos;
 
-  const groupPos = map.groupPositions.get(groupOf(attrName));
+  const groupId = groupOf(attrName);
+  const groupPos = map.groupPositions.get(groupId);
   if (groupPos !== undefined) return groupPos;
 
-  return Infinity;
+  // Not in custom order: offset by the number of custom entries so these
+  // always follow specified items, then use the default group number to
+  // preserve relative ordering between unspecified attributes.
+  return map.length + groupId;
 }

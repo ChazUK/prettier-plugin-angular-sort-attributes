@@ -292,15 +292,18 @@ describe("angularSortAttributesOrder option", () => {
     assert.ok(output.indexOf('class="c"') < output.indexOf("(click)"));
   });
 
-  it("places unspecified attributes alphabetically at the end", async () => {
+  it("unspecified attributes follow custom entries in default group order", async () => {
     const output = await fmtCustom(
       `<div (click)="fn()" class="c" *ngIf="x" [val]="v" />`,
       ["<OUTPUTS>"],
     );
-    // (click) specified first; everything else goes to end sorted alphabetically
+    // (click) is specified first
     assert.ok(output.indexOf("(click)") < output.indexOf("*ngIf"));
     assert.ok(output.indexOf("(click)") < output.indexOf('class="c"'));
     assert.ok(output.indexOf("(click)") < output.indexOf("[val]"));
+    // unspecified attributes maintain default group order among themselves
+    assert.ok(output.indexOf("*ngIf") < output.indexOf('class="c"'));
+    assert.ok(output.indexOf('class="c"') < output.indexOf("[val]"));
   });
 
   it("empty option falls back to default group ordering", async () => {
