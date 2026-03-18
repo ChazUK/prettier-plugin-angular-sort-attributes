@@ -1,19 +1,35 @@
 {
-  "name": "angular-attribute-sort",
-  "version": "1.0.0",
+  "name": "prettier-plugin-angular-attribute-sort",
+  "version": "0.0.1",
   "description": "Prettier plugin that sorts Angular HTML template attributes",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
   "main": "index.js",
-  "keywords": ["prettier", "prettier-plugin", "angular", "html", "sort", "attributes"],
+  "files": [
+    "index.js",
+    "src"
+  ],
+  "keywords": [
+    "prettier",
+    "prettier-plugin",
+    "angular",
+    "html",
+    "sort",
+    "attributes"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
-    "test": "node --test test/index.test.js"
+    "test": "node --test test/index.test.js",
+    "release": "np"
   },
   "peerDependencies": {
     "prettier": "^3.0.0"
   },
   "devDependencies": {
+    "np": "^11.0.2",
     "prettier": "^3.0.0"
   }
 }
