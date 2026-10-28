@@ -24,8 +24,10 @@ function findOriginalParser(parserName, options, self) {
 function wrapParser(parserName, self) {
   return {
     astFormat: "html",
-    locStart: (node) => node.sourceSpan?.start?.offset ?? 0,
-    locEnd: (node) => node.sourceSpan?.end?.offset ?? 0,
+    locStart: (node) =>
+      (node.originalSourceSpan ?? node.sourceSpan)?.start?.offset ?? 0,
+    locEnd: (node) =>
+      (node.originalSourceSpan ?? node.sourceSpan)?.end?.offset ?? 0,
     parse(text, options) {
       const original = findOriginalParser(parserName, options, self);
       const ast = original.parse(text, options);

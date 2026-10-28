@@ -65,6 +65,34 @@ Within each group, attributes are sorted alphabetically.
 />
 ```
 
+## Comments inside element tags
+
+Angular 22 allows `//` and `/* */` comments between attributes. A comment is treated as belonging to the attribute that follows it and moves with that attribute when sorting. Comments after the last attribute stay at the end.
+
+```html
+<!-- before -->
+<app-book-card
+  // Pass a book as input
+  [book]="b"
+  /* Process received 'like' event */
+  (like)="addLikedBook($event)"
+  class="card"
+  *ngIf="b"
+/>
+
+<!-- after -->
+<app-book-card
+  *ngIf="b"
+  class="card"
+  // Pass a book as input
+  [book]="b"
+  /* Process received 'like' event */
+  (like)="addLikedBook($event)"
+/>
+```
+
+Elements preceded by `<!-- prettier-ignore-attribute -->` that also contain comments are left in their original order.
+
 ## Custom order
 
 Use `angularSortAttributesOrder` to override the ordering with group tokens, specific attribute names, or a mix of both.
