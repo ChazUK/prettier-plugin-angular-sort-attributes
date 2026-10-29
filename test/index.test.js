@@ -418,3 +418,92 @@ describe("edge cases", () => {
     assertOrder(output, 'class="x"', "[value]", "(change)");
   });
 });
+
+// ---------------------------------------------------------------------------
+// Angular 22 comments inside element tags
+// ---------------------------------------------------------------------------
+
+describe("comments inside element tags (Angular 22)", () => {
+  it("sorts attributes when the tag contains comments", async () => {
+    const output = await fmt(`<div (click)="fn()" /* note */ class="x" *ngIf="show"></div>`);
+    assertOrder(output, "*ngIf", 'class="x"', "(click)");
+  });
+
+  it("keeps each comment attached to the attribute that follows it", async () => {
+    const output = await fmt(`
+<app-book-card
+  // Pass a book as input
+  [book]="b"
+  /* Process received 'like' event */
+  (like)="addLikedBook($event)"
+  class="card"
+  *ngIf="b"
+/>`);
+    assert.equal(
+      output,
+      `<app-book-card
+  *ngIf="b"
+  class="card"
+  // Pass a book as input
+  [book]="b"
+  /* Process received 'like' event */
+  (like)="addLikedBook($event)"
+/>`,
+    );
+  });
+
+  it("moves multiple leading comments together with their attribute", async () => {
+    const output = await fmt(`<div
+  // first
+  // second
+  (click)="fn()"
+  id="a"
+></div>`);
+    assertOrder(output, 'id="a"', "// first", "// second", "(click)");
+  });
+
+  it("keeps comments after the last attribute at the end", async () => {
+    const output = await fmt(`<input (change)="fn()" id="i" /* trailing */ />`);
+    assertOrder(output, 'id="i"', "(change)", "/* trailing */");
+  });
+
+  it("respects a custom order", async () => {
+    const output = await fmtCustom(
+      `<button class="btn" /* submit */ (click)="submit()"></button>`,
+      ["<OUTPUTS>", "<HTML_ATTRIBUTES>"],
+    );
+    assertOrder(output, "/* submit */", "(click)", 'class="btn"');
+  });
+
+  it("sorts inline TypeScript templates with comments", async () => {
+    const output = await fmtTs(`
+@Component({
+  selector: "app-x",
+  template: \`<div (click)="fn()" /* note */ class="x"></div>\`,
+})
+export class X {}`);
+    assertOrder(output, "/* note */", 'class="x"', "(click)");
+  });
+
+  it("leaves elements with prettier-ignore-attribute untouched", async () => {
+    const output = await fmt(`<!-- prettier-ignore-attribute -->
+<div (click)="fn()" /* note */ id="a"></div>`);
+    assertOrder(output, "(click)", "/* note */", 'id="a"');
+  });
+
+  it("is idempotent", async () => {
+    const input = `<div (click)="fn()" // why\n  [value]="v" class="x" /* end */></div>`;
+    const first = await fmt(input);
+    assert.equal(await fmt(first), first);
+  });
+
+  it("supports cursorOffset after reordering", async () => {
+    const input = `<div (click)="fn()" /* note */ class="x"></div>`;
+    const result = await prettier.formatWithCursor(input, {
+      ...BASE_OPTS,
+      parser: "angular",
+      cursorOffset: input.indexOf("class"),
+    });
+    assert.ok(result.formatted.includes('/* note */ class="x" (click)="fn()"'));
+  });
+});
